@@ -1,0 +1,22 @@
+# created 160320
+
+# Download STM32 Standard Periph lib from
+http://www.st.com/web/catalog/tools/FM147/CL1794/SC961/SS1743/LN1939/PF257890
+# At time of writing this, the newest version is 3.5.0 and is avaible at:
+wget http://www.st.com/st-web-ui/static/active/en/st_prod_software_internet/resource/technical/software/firmware/stsw-stm32054.zip
+
+# Unzip the archive at some temporary place and remove it
+unzip stsw-stm32054.zip && rm rm stsw-stm32054.zip
+
+# Make folder for 3rd party bits and pieces
+mkdir -p src/3rd\ party/st/f1
+
+# Copy only the relevant parts (I like to use rsync, but cp is OK too):
+rsync -av STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/ src/3rd\ party/st/f1
+
+# Optional step: Copy ST's examples
+mkdir src/3rd\ party/st/f1/examples
+rsync -av STM32F10x_StdPeriph_Lib_V3.5.0/Project/STM32F10x_StdPeriph_Examples src/3rd\ party/st/f1/examples
+
+# We can now remove downloaded STM32 lib:
+rm -rf STM32F10x_StdPeriph_Lib_V3.5.0
