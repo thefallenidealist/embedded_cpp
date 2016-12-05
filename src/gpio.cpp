@@ -4,8 +4,8 @@
 #include <ctype.h> // toupper()
 //#include <string.h> // strlen()
 using namespace std;
-#define DEBUG
 #include "debug.h"
+#include "debug.c"
 
 
 // INFO std::string and char* are mixed. strings will be used only on PC/simulator
@@ -21,10 +21,14 @@ class gpio_bus_t														// {{{
 	private:
 		const char* filename_prefix = "gpio";
 		const char* filename_extension = ".txt";
+		//const char* filename_extension = ".txt";
 		static const uint8_t filename_length_max = 20;
 		ofstream gpio_file;
 		char filename[filename_length_max] = {};
 		static bool initialised;
+	//protected:
+	public:
+		char* get_filename(void);
 }; // gpio_bus_t														// }}}
 gpio_bus_t::gpio_bus_t(char port)										// {{{
 // INFO opens a file and write "undefined" states of pins on that port
@@ -34,7 +38,6 @@ gpio_bus_t::gpio_bus_t(char port)										// {{{
 
 	snprintf(filename, filename_length_max-1, "%s%c%s", filename_prefix, port_uppercase, filename_extension);
 
-	//printf("filename: %s length: %d\n", filename, strlen(filename));
 	printf("filename: %s length: %lu\n", filename, sizeof(filename)/sizeof(filename[0]));
 
 	char tmp_buffer[] = "PA15: YYY x"; // buffer for writing line to the file
@@ -48,15 +51,25 @@ gpio_bus_t::gpio_bus_t(char port)										// {{{
 		sprintf(tmp_buffer, "P%c%02d: YYY x", port_uppercase, i);
 		gpio_file << tmp_buffer << endl;
 	}
+
+	DEBUG_END
 } // constructor }}}
 gpio_bus_t::~gpio_bus_t(void)											// {{{
 {
-	printf("destructor %s()\n", __func__);
-	DEBUG_START
+	DEBUG_START;
+	printy("destructor\n");
 
 	printf("Closing file: %s\n", filename);
 	gpio_file.close();
+	DEBUG_END;
 }	// desctructor															}}}
+char *gpio_bus_t::get_filename(void)											// {{{
+{
+	DEBUG_START;
+	return gpio_bus_t::filename;
+	DEBUG_END;
+}	// desctructor															}}}
+
 
 enum class gpio_direction_t												// {{{
 {
@@ -121,7 +134,6 @@ gpio_t::~gpio_t(void) // {{{
 
 void gpio_t::test(void)
 {
-	DEBUG_START;
 	printf("\t\t\tsdfsdfsdfsdfsdfdsf\n");
 	//printf("pin_template: %s\n", gpio_t::pin_template);
 	printf("pin_template: %s\n", pin_template);
@@ -137,14 +149,16 @@ void gpio_t::init(const char *pin, gpio_direction_t direction) //			{{{
 	// old: printf("%s::%s(port: %s, type: %d)\n", gpio_t::class_name(),  __func__, port.c_str(), type);
 	// dobije npr PA0 i onda to postavi u IN ili OUT
 	cout << __PRETTY_FUNCTION__ << " start, args: pin: " << *pin << " direction: " << static_cast<int>(direction) << endl;
-	DEBUG_START;
 
 	// TODO
 }
 //**************************************************************************}}}
 void gpio_t::write(bool state)
 {
+	DEBUG_START;
 	// write state to file (PA00: IN $state)
+	//printy("Opening file: %s\n", this->filename);
+
 }
 
 
